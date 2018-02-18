@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AsyncCommandSend extends AsyncTask<Command, Void, IOException> {
     public static final Charset CHARSET = Charset.forName("UTF-8");
+
     @Getter
     private final OutputStream out;
 

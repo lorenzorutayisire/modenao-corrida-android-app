@@ -38,11 +38,14 @@ public class SuggestCommand extends Command {
 
     @Override
     public SuggestCommand decode(String[] split) {
+        // suggest <description>
         description = split[1];
-        if (split.length > 1) {
+        // suggest <description> [question]
+        if (split.length > 2) {
             question = split[2];
         }
-        if (split.length > 2) {
+        // suggest <description> [question] [answer]
+        if (split.length > 3) {
             answer = split[3];
         }
         return this;

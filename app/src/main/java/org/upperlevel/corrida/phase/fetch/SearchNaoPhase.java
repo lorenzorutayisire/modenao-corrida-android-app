@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import org.upperlevel.corrida.R;
 import org.upperlevel.corrida.phase.Phase;
-import org.upperlevel.corrida.phase.game.GamePhase;
+import org.upperlevel.corrida.phase.game.Game;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -90,6 +90,6 @@ public class SearchNaoPhase extends Thread implements Phase {
         } catch (IOException e) {
             throw new IllegalStateException("Cannot connect to remote: " + address + ":" + DEFAULT_PORT);
         }
-        activity.runOnUiThread(() -> parent.setPhase(new GamePhase(parent.getParent(), tcpSocket)));
+        activity.runOnUiThread(() -> parent.setPhase(new Game(parent.getParent(), tcpSocket)));
     }
 }

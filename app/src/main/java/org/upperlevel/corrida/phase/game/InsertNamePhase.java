@@ -28,15 +28,16 @@ public class InsertNamePhase implements Phase {
     private Activity activity;
 
     @Getter
-    private GamePhase game;
+    private Game game;
 
     @Getter
     private TextView nameErrorField;
 
     @Getter
     private Thread responseListener = null;
+    private boolean listeningResponse = false;
 
-    public InsertNamePhase(GamePhase game) {
+    public InsertNamePhase(Game game) {
         this.activity = game.getActivity();
         this.game = game;
     }
@@ -52,8 +53,9 @@ public class InsertNamePhase implements Phase {
 
     @Override
     public void onStop() {
-        if (responseListener.isAlive()) {
+        if (listeningResponse) {
             responseListener.interrupt();
+            listeningResponse = false;
         }
     }
 
@@ -63,6 +65,7 @@ public class InsertNamePhase implements Phase {
     public class ResponseListener extends Thread {
         @Override
         public void run() {
+            listeningResponse = true;
             try {
                 NameResponseCommand nameResponseCmd = new NameResponseCommand().decode(Command.split(game.receive()));
                 switch (nameResponseCmd.getResponse()) {
@@ -86,6 +89,7 @@ public class InsertNamePhase implements Phase {
                 Toast.makeText(activity, "Errore di ricezione", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
+            listeningResponse = false;
         }
     }
 
@@ -103,13 +107,14 @@ public class InsertNamePhase implements Phase {
             }
             try {
                 game.emit(new NameCommand(name));
+                game.setMe(new Player(name));
                 Log.i(TAG, "Name sent!");
             } catch (IOException e) {
                 Toast.makeText(activity, "Cannot send name", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
                 return;
             }
-            if (!responseListener.isAlive()) {
+            if (!listeningResponse) {
                 responseListener.start();
                 Log.i(TAG, "Waiting for a confirmation of the name.");
             }

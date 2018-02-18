@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 
@@ -29,18 +30,15 @@ public class LobbyPhase implements Phase {
     private Activity activity;
 
     @Getter
-    private GamePhase game;
+    private Game game;
 
     @Getter
     private Thread waitStartTask; // issued when the start button is pressed
 
     @Getter
-    private Set<String> players = Collections.synchronizedSet(new HashSet<>());
-
-    @Getter
     private TextView playersDisplay;
 
-    public LobbyPhase(GamePhase game) {
+    public LobbyPhase(Game game) {
         this.activity = game.getActivity();
         this.game = game;
     }
@@ -82,25 +80,30 @@ public class LobbyPhase implements Phase {
                 switch (received[0]) {
                     case "players":
                         PlayersCommand playersCmd = new PlayersCommand().decode(received);
-                        players.addAll(playersCmd.getPlayers());
                         activity.runOnUiThread(() -> {
-                            playersDisplay.setText(players.size() + "");
+                            for (String name : playersCmd.getPlayers()) {
+                                game.addPlayer(new Player(name));
+                            }
+                            int size = game.getPlayers().size();
+                            playersDisplay.setText(size + "");
                             Log.i(TAG, "Received 'players' packet. Updated player number field.");
                         });
                         break;
                     case "player_join":
                         PlayerJoinCommand playerJoinCmd = new PlayerJoinCommand().decode(received);
-                        players.add(playerJoinCmd.getPlayer());
                         activity.runOnUiThread(() -> {
-                            playersDisplay.setText(players.size() + "");
+                            game.addPlayer(new Player(playerJoinCmd.getPlayer()));
+                            int size = game.getPlayers().size();
+                            playersDisplay.setText(size + "");
                             Log.i(TAG, "Received 'player_join' packet. Updated player number field.");
                         });
                         break;
                     case "player_quit":
                         PlayerQuitCommand playerQuitCmd = new PlayerQuitCommand().decode(received);
-                        players.remove(playerQuitCmd.getPlayer());
                         activity.runOnUiThread(() -> {
-                            playersDisplay.setText(players.size() + "");
+                            game.removePlayer(playerQuitCmd.getPlayer());
+                            int size = game.getPlayers().size();
+                            playersDisplay.setText(size + "");
                             Log.i(TAG, "Received 'player_quit' packet. Updated player number field.");
                         });
                         break;
@@ -127,7 +130,7 @@ public class LobbyPhase implements Phase {
         @Override
         public void onClick(View view) {
             try {
-                if (players.size() > 1) {
+                if (game.canStart()) {
                     game.emit(new StartRequestCommand());
                     Log.i(TAG, "There are enough players to start the game!");
                 } else {

@@ -45,7 +45,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="..."
-                android:textColor="#263238"
                 android:textSize="22sp" />
 
         </LinearLayout>
@@ -72,7 +71,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="..."
-                android:textColor="#263238"
                 android:textSize="22sp" />
 
         </LinearLayout>
@@ -124,12 +122,14 @@
                 android:text="..."
                 android:textSize="15sp"
                 android:visibility="invisible" />
+
         </LinearLayout>
 
+        <!-- Rating -->
         <LinearLayout
             android:id="@+id/rating"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -145,69 +145,51 @@
             <LinearLayout
                 android:id="@+id/rating_bar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <Button
-                    android:id="@+id/rate0"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1666"
-                    android:background="#ff0000"
-                    android:text="0"
-                    android:textSize="24sp" />
-
-                <Button
-                    android:id="@+id/rate1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1666"
-                    android:background="#FF3300"
-                    android:text="1"
-                    android:textSize="24sp" />
-
-                <Button
-                    android:id="@+id/rate2"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1666"
-                    android:background="#ff6600"
-                    android:text="2"
-                    android:textSize="24sp" />
-
-                <Button
-                    android:id="@+id/rate3"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1666"
-                    android:background="#ff9900"
-                    android:text="3"
-                    android:textSize="24sp" />
-
-                <Button
-                    android:id="@+id/rate4"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1666"
-                    android:background="#FFCC00"
-                    android:text="4"
-                    android:textSize="24sp" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <Button
                     android:id="@+id/rate5"
-                    style="?android:attr/borderlessButtonStyle"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.1666"
-                    android:background="#00FF00"
-                    android:text="5"
-                    android:textSize="24sp" />
+                    android:layout_weight="0.20"
+                    android:background="#00ff00"
+                    android:text="Impeccabile!" />
+
+                <Button
+                    android:id="@+id/rate4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.20"
+                    android:background="#99ff00"
+                    android:text="Wow!" />
+
+                <Button
+                    android:id="@+id/rate3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.20"
+                    android:background="#FFCC00"
+                    android:text="Niente male!" />
+
+                <Button
+                    android:id="@+id/rate2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.20"
+                    android:background="#FF3300"
+                    android:text="Puoi fare di meglio!" />
+
+                <Button
+                    android:id="@+id/rate1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#FF0000"
+                    android:text="Pessimo!" />
 
             </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>

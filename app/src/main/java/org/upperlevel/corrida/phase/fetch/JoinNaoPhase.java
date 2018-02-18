@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import org.upperlevel.corrida.R;
 import org.upperlevel.corrida.phase.Phase;
-import org.upperlevel.corrida.phase.game.GamePhase;
+import org.upperlevel.corrida.phase.game.Game;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -120,13 +120,12 @@ public class JoinNaoPhase implements Phase {
             try {
                 socket = new Socket(hostname, port);
             } catch (IOException e) {
-                Toast.makeText(activity, "Impossibile connettersi", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
+                activity.runOnUiThread(() -> Toast.makeText(activity, "Impossibile connettersi", Toast.LENGTH_SHORT).show());5
                 return;
             }
             Log.i(TAG, "Connection established to endpoint");
             activity.runOnUiThread(() -> {
-                parent.getParent().setPhase(new GamePhase(parent.getParent(), socket));
+                parent.getParent().setPhase(new Game(parent.getParent(), socket));
                 Log.i(TAG, "Changing to next phase.");
             });
         }
