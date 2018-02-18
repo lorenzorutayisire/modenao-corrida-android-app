@@ -37,26 +37,33 @@ public class JoinNaoPhase implements Phase {
     @Getter
     private TextView portErrorField;
 
+    @Getter
+    private Thread establishConnectionThread;
+
     public JoinNaoPhase(FetchPhase parent) {
         this.parent = parent;
         this.activity = parent.getActivity();
     }
 
-    @Override
-    public void onStart() {
-        activity.setContentView(R.layout.activity_join_nao);
-
+    private void initFields() {
         hostnameTextField = activity.findViewById(R.id.hostname_input);
         hostnameErrorField = activity.findViewById(R.id.hostname_error);
         portTextField = activity.findViewById(R.id.port_input);
         portErrorField = activity.findViewById(R.id.port_error);
+    }
 
-        activity.findViewById(R.id.connect)
-                .setOnClickListener(new OnNaoJoin());
+    @Override
+    public void onStart() {
+        activity.setContentView(R.layout.activity_join_nao);
+        initFields();
+        activity.findViewById(R.id.connect).setOnClickListener(new OnNaoJoin());
     }
 
     @Override
     public void onStop() {
+        if (establishConnectionThread != null && establishConnectionThread.isAlive()) {
+            establishConnectionThread.start();
+        }
     }
 
     public class OnNaoJoin implements View.OnClickListener {
@@ -89,6 +96,25 @@ public class JoinNaoPhase implements Phase {
             Log.i(TAG, "Port number is correct");
 
             // Connection
+            establishConnectionThread = new EstablishConnection(hostname, port);
+            establishConnectionThread.start();
+        }
+    }
+
+    public class EstablishConnection extends Thread {
+        @Getter
+        private String hostname;
+
+        @Getter
+        private int port;
+
+        public EstablishConnection(String hostname, int port) {
+            this.hostname = hostname;
+            this.port = port;
+        }
+
+        @Override
+        public void run() {
             Socket socket;
             Log.i(TAG, "Establishing connection...");
             try {
@@ -99,7 +125,10 @@ public class JoinNaoPhase implements Phase {
                 return;
             }
             Log.i(TAG, "Connection established to endpoint");
-            parent.getParent().setPhase(new GamePhase(parent.getParent(), socket));
+            activity.runOnUiThread(() -> {
+                parent.getParent().setPhase(new GamePhase(parent.getParent(), socket));
+                Log.i(TAG, "Changing to next phase.");
+            });
         }
     }
 }
