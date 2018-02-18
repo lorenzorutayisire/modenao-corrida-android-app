@@ -33,10 +33,9 @@ public class GamePhase extends PhaseManager implements Phase {
         this.socket = socket;
     }
 
-    public void emit(Command command) throws IOException {
+    public void emit(Command... command) throws IOException {
         OutputStream out = socket.getOutputStream();
-        out.write(command.encode().getBytes("UTF-8"));
-        out.flush();
+        new AsyncCommandSend(out).execute(command);
     }
 
     public String receive() throws IOException {
