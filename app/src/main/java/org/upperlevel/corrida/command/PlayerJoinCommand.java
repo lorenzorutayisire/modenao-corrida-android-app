@@ -15,7 +15,7 @@ public class PlayerJoinCommand extends Command {
 
     @Override
     public String encode() {
-        return "player_join " + player;
+        return "player_join " + player + "\n";
     }
 
     @Override

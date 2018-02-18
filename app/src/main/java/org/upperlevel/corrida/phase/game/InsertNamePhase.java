@@ -1,11 +1,13 @@
 package org.upperlevel.corrida.phase.game;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.upperlevel.corrida.R;
+import org.upperlevel.corrida.command.Command;
 import org.upperlevel.corrida.command.NameCommand;
 import org.upperlevel.corrida.command.NameResponseCommand;
 import org.upperlevel.corrida.phase.Phase;
@@ -19,7 +21,9 @@ import lombok.Getter;
  * Here we ask the player to insert its name and we send it to the player.
  */
 public class InsertNamePhase implements Phase {
+    public static final String TAG = "InsertNamePhase";
     private static final Pattern CHECK_NAME = Pattern.compile("^[\\s_a-zA-Z0-9]{1,16}$");
+
     @Getter
     private Activity activity;
 
@@ -27,7 +31,7 @@ public class InsertNamePhase implements Phase {
     private GamePhase game;
 
     @Getter
-    private TextView nameError;
+    private TextView nameErrorField;
 
     @Getter
     private Thread responseListener = null;
@@ -41,7 +45,8 @@ public class InsertNamePhase implements Phase {
     public void onStart() {
         activity.setContentView(R.layout.activity_insert_name);
         activity.findViewById(R.id.name_submit).setOnClickListener(new OnNameSubmit());
-        nameError = activity.findViewById(R.id.name_error);
+        nameErrorField = activity.findViewById(R.id.name_error);
+
         responseListener = new ResponseListener();
     }
 
@@ -52,25 +57,41 @@ public class InsertNamePhase implements Phase {
         }
     }
 
+    /**
+     * Listens for responses to the "name" packet.
+     */
     public class ResponseListener extends Thread {
         @Override
         public void run() {
             try {
-                switch (NameResponseCommand.parse(game.receive()).getResponse()) {
-                    case OK:
-                        game.setPhase(new WaitStartPhase(game));
+                NameResponseCommand nameResponseCmd = new NameResponseCommand().decode(Command.split(game.receive()));
+                switch (nameResponseCmd.getResponse()) {
+                    case "ok":
+                        activity.runOnUiThread(() -> {
+                            game.setPhase(new LobbyPhase(game));
+                            Log.i(TAG, "The name is perfect, going on to the next phase (LobbyPhase).");
+                        });
                         break;
-                    case TAKEN:
-                        nameError.setText("Nome già preso!");
+                    case "taken":
+                        activity.runOnUiThread(() -> {
+                            nameErrorField.setText("Nome già preso!");
+                            Log.i(TAG, "The name has already been taken!");
+                        });
+                        break;
+                    default:
+                        Log.e(TAG, "Unknown name response: " + nameResponseCmd.getResponse());
                         break;
                 }
-            } catch (IOException ignored) {
-                activity.runOnUiThread(() -> Toast.makeText(activity, "Cannot receive response", Toast.LENGTH_SHORT).show());
+            } catch (IOException e) {
+                Toast.makeText(activity, "Errore di ricezione", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
             }
-            responseListener = null;
         }
     }
 
+    /**
+     * Listens for "name" send button click.
+     */
     public class OnNameSubmit implements View.OnClickListener {
         @Override
         public void onClick(View view) {
@@ -82,11 +103,16 @@ public class InsertNamePhase implements Phase {
             }
             try {
                 game.emit(new NameCommand(name));
-            } catch (IOException ignored) {
+                Log.i(TAG, "Name sent!");
+            } catch (IOException e) {
                 Toast.makeText(activity, "Cannot send name", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
                 return;
             }
-            responseListener.start();
+            if (!responseListener.isAlive()) {
+                responseListener.start();
+                Log.i(TAG, "Waiting for a confirmation of the name.");
+            }
         }
     }
 }

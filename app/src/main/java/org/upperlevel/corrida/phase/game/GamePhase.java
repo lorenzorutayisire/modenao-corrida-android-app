@@ -47,11 +47,10 @@ public class GamePhase extends PhaseManager implements Phase {
 
     @Override
     public void onStart() {
-
+        setPhase(new InsertNamePhase(this));
     }
 
     @Override
     public void onStop() {
-
     }
 }

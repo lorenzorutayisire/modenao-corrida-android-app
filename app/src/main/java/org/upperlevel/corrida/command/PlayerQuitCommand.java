@@ -15,7 +15,7 @@ public class PlayerQuitCommand extends Command {
 
     @Override
     public String encode() {
-        return "player_quit " + player;
+        return "player_quit " + player + "\n";
     }
 
     @Override

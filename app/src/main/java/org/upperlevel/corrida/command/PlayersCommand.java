@@ -26,7 +26,7 @@ public class PlayersCommand extends Command {
             encoded.append(separator).append(player);
             separator = " ";
         }
-        return "players " + encoded.toString();
+        return "players " + encoded.toString() + "\n";
     }
 
     @Override

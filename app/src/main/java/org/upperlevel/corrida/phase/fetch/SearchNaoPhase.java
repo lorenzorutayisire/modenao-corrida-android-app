@@ -90,6 +90,6 @@ public class SearchNaoPhase extends Thread implements Phase {
         } catch (IOException e) {
             throw new IllegalStateException("Cannot connect to remote: " + address + ":" + DEFAULT_PORT);
         }
-        parent.setPhase(new GamePhase(parent.getParent(), tcpSocket));
+        activity.runOnUiThread(() -> parent.setPhase(new GamePhase(parent.getParent(), tcpSocket)));
     }
 }

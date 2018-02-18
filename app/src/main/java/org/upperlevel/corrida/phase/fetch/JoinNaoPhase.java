@@ -1,6 +1,7 @@
 package org.upperlevel.corrida.phase.fetch;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,6 +17,8 @@ import java.net.Socket;
 import lombok.Getter;
 
 public class JoinNaoPhase implements Phase {
+    private static final String TAG = JoinNaoPhase.class.getSimpleName();
+
     @Getter
     private FetchPhase parent;
 
@@ -23,16 +26,16 @@ public class JoinNaoPhase implements Phase {
     private Activity activity;
 
     @Getter
-    private EditText hostnameText;
+    private EditText hostnameTextField;
 
     @Getter
-    private TextView hostnameError;
+    private TextView hostnameErrorField;
 
     @Getter
-    private EditText portText;
+    private EditText portTextField;
 
     @Getter
-    private TextView portError;
+    private TextView portErrorField;
 
     public JoinNaoPhase(FetchPhase parent) {
         this.parent = parent;
@@ -43,13 +46,12 @@ public class JoinNaoPhase implements Phase {
     public void onStart() {
         activity.setContentView(R.layout.activity_join_nao);
 
-        hostnameText = activity.findViewById(R.id.hostname_input);
-        hostnameError = activity.findViewById(R.id.hostname_error);
-        portText = activity.findViewById(R.id.port_input);
-        portError = activity.findViewById(R.id.port_error);
+        hostnameTextField = activity.findViewById(R.id.hostname_input);
+        hostnameErrorField = activity.findViewById(R.id.hostname_error);
+        portTextField = activity.findViewById(R.id.port_input);
+        portErrorField = activity.findViewById(R.id.port_error);
 
-        activity
-                .findViewById(R.id.connect)
+        activity.findViewById(R.id.connect)
                 .setOnClickListener(new OnNaoJoin());
     }
 
@@ -60,27 +62,35 @@ public class JoinNaoPhase implements Phase {
     public class OnNaoJoin implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            // hostname
-            String hostname = hostnameText.getText().toString();
-            hostnameError.setText("");
+            // Hostname
+            String hostname = hostnameTextField.getText().toString();
+            hostnameErrorField.setText("");
             if (hostname.isEmpty()) {
-                hostnameError.setText("Indirizzo invalido");
+                hostnameErrorField.setText("Indirizzo invalido");
+                Log.w(TAG, "Found invalid hostname");
             }
-            // port
+            Log.i(TAG, "Hostname is correct");
+
+            // Port
             int port;
-            portError.setText("");
+            portErrorField.setText("");
             try {
-                port = Integer.parseInt(portText.getText().toString());
+                port = Integer.parseInt(portTextField.getText().toString());
             } catch (NumberFormatException e) {
-                portError.setText("Dovresti inserire un numero intero");
+                portErrorField.setText("Dovresti inserire un numero intero");
+                Log.w(TAG, "Invalid port number format");
                 return;
             }
             if (port < 0 || port >= 65535) {
-                portError.setText("Dovresti inserire un numero compreso tra 0 e 65535");
+                portErrorField.setText("Dovresti inserire un numero compreso tra 0 e 65535");
+                Log.w(TAG, "Invalid port number");
                 return;
             }
-            // try connect
+            Log.i(TAG, "Port number is correct");
+
+            // Connection
             Socket socket;
+            Log.i(TAG, "Establishing connection...");
             try {
                 socket = new Socket(hostname, port);
             } catch (IOException e) {
@@ -88,6 +98,7 @@ public class JoinNaoPhase implements Phase {
                 e.printStackTrace();
                 return;
             }
+            Log.i(TAG, "Connection established to endpoint");
             parent.getParent().setPhase(new GamePhase(parent.getParent(), socket));
         }
     }

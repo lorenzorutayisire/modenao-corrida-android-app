@@ -8,41 +8,23 @@ import lombok.Getter;
 
 public class NameResponseCommand extends Command {
     @Getter
-    private Response response;
+    private String response;
 
     public NameResponseCommand() {
     }
 
-    public NameResponseCommand(Response response) {
+    public NameResponseCommand(String response) {
         this.response = response;
     }
 
     @Override
     public String encode() {
-        return "name_response " + response.name().toLowerCase(Locale.ENGLISH);
+        return "name_response " + response + "\n";
     }
 
     @Override
     public NameResponseCommand decode(String[] split) {
-        response = Response.MAP.get(split[1]);
+        response = split[1];
         return this;
-    }
-
-    public enum Response {
-        OK,
-        TAKEN;
-
-        private static Map<String, Response> MAP = new HashMap<>();
-
-        static {
-            MAP.put("ok", OK);
-            MAP.put("taken", TAKEN);
-        }
-    }
-
-    public static NameResponseCommand parse(String raw) {
-        NameResponseCommand result = new NameResponseCommand();
-        result.decode(split(raw));
-        return result;
     }
 }

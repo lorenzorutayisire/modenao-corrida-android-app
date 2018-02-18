@@ -6,7 +6,7 @@ public class StartRequestCommand extends Command {
 
     @Override
     public String encode() {
-        return "start_request";
+        return "start_request\n";
     }
 
     @Override
