@@ -120,7 +120,7 @@ public class JoinNaoPhase implements Phase {
             try {
                 socket = new Socket(hostname, port);
             } catch (IOException e) {
-                activity.runOnUiThread(() -> Toast.makeText(activity, "Impossibile connettersi", Toast.LENGTH_SHORT).show());5
+                activity.runOnUiThread(() -> Toast.makeText(activity, "Impossibile connettersi", Toast.LENGTH_SHORT).show());
                 return;
             }
             Log.i(TAG, "Connection established to endpoint");
