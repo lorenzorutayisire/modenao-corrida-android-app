@@ -40,7 +40,7 @@ public class GamePhase extends PhaseManager implements Phase {
 
     public String receive() throws IOException {
         InputStream in = socket.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
         return reader.readLine();
     }
 
