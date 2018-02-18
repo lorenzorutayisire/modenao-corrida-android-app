@@ -26,11 +26,19 @@ public class GamePhase extends PhaseManager implements Phase {
     @Getter
     private Socket socket;
 
+    @Getter
+    private BufferedReader in;
+
     public GamePhase(Corrida parent, Socket socket) {
         this.parent = parent;
         this.activity = parent.getActivity();
 
         this.socket = socket;
+        try {
+            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+        } catch (IOException e) {
+            throw new IllegalStateException("Cannot get input stream", e);
+        }
     }
 
     public void emit(Command... command) throws IOException {
@@ -39,9 +47,7 @@ public class GamePhase extends PhaseManager implements Phase {
     }
 
     public String receive() throws IOException {
-        InputStream in = socket.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-        return reader.readLine();
+        return in.readLine();
     }
 
     @Override
