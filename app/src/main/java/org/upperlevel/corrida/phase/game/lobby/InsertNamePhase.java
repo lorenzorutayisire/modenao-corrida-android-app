@@ -1,4 +1,4 @@
-package org.upperlevel.corrida.phase.game;
+package org.upperlevel.corrida.phase.game.lobby;
 
 import android.app.Activity;
 import android.util.Log;
@@ -11,15 +11,14 @@ import org.upperlevel.corrida.command.Command;
 import org.upperlevel.corrida.command.NameCommand;
 import org.upperlevel.corrida.command.NameResponseCommand;
 import org.upperlevel.corrida.phase.Phase;
+import org.upperlevel.corrida.phase.game.Game;
+import org.upperlevel.corrida.phase.game.Player;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
 
 import lombok.Getter;
 
-/**
- * Here we ask the player to insert its name and we send it to the player.
- */
 public class InsertNamePhase implements Phase {
     public static final String TAG = "InsertNamePhase";
     private static final Pattern CHECK_NAME = Pattern.compile("^[\\s_a-zA-Z0-9]{1,16}$");
@@ -71,7 +70,7 @@ public class InsertNamePhase implements Phase {
                 switch (nameResponseCmd.getResponse()) {
                     case "ok":
                         activity.runOnUiThread(() -> {
-                            game.setPhase(new LobbyPhase(game));
+                            game.setPhase(new Lobby(game));
                             Log.i(TAG, "The name is perfect, going on to the next phase (LobbyPhase).");
                         });
                         break;

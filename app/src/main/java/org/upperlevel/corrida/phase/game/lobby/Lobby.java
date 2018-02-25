@@ -1,4 +1,4 @@
-package org.upperlevel.corrida.phase.game;
+package org.upperlevel.corrida.phase.game.lobby;
 
 import android.app.Activity;
 import android.util.Log;
@@ -11,20 +11,18 @@ import org.upperlevel.corrida.command.Command;
 import org.upperlevel.corrida.command.PlayerJoinCommand;
 import org.upperlevel.corrida.command.PlayerQuitCommand;
 import org.upperlevel.corrida.command.PlayersCommand;
-import org.upperlevel.corrida.command.StartRequestCommand;
+import org.upperlevel.corrida.command.RequestStartCommand;
 import org.upperlevel.corrida.phase.Phase;
-import org.upperlevel.corrida.phase.game.playing.PlayingPhase;
+import org.upperlevel.corrida.phase.game.Game;
+import org.upperlevel.corrida.phase.game.Performance;
+import org.upperlevel.corrida.phase.game.Player;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 
-public class LobbyPhase implements Phase {
-    public static final String TAG = LobbyPhase.class.getSimpleName();
+public class Lobby implements Phase {
+    public static final String TAG = "Lobby";
 
     @Getter
     private Activity activity;
@@ -38,7 +36,7 @@ public class LobbyPhase implements Phase {
     @Getter
     private TextView playersDisplay;
 
-    public LobbyPhase(Game game) {
+    public Lobby(Game game) {
         this.activity = game.getActivity();
         this.game = game;
     }
@@ -107,10 +105,11 @@ public class LobbyPhase implements Phase {
                             Log.i(TAG, "Received 'player_quit' packet. Updated player number field.");
                         });
                         break;
-                    case "game_start":
+                    case "performance_start":
+                        Player performer = game.getPlayer(received[1]);
                         activity.runOnUiThread(() -> {
-                            game.setPhase(new PlayingPhase(game));
-                            Log.i(TAG, "Received a 'game_start' packet. Ready to play!");
+                            Log.i(TAG, "New performance started! Preparing new phase...");
+                            game.setPhase(new Performance(game, performer));
                         });
                         repeat = false;
                         break;
@@ -119,7 +118,6 @@ public class LobbyPhase implements Phase {
                         break;
                 }
             }
-            Log.i(TAG, "Listening task stopped! Has 'game_start' packet been received?");
         }
     }
 
@@ -131,7 +129,7 @@ public class LobbyPhase implements Phase {
         public void onClick(View view) {
             try {
                 if (game.canStart()) {
-                    game.emit(new StartRequestCommand());
+                    game.emit(new RequestStartCommand());
                     Log.i(TAG, "There are enough players to start the game!");
                 } else {
                     Toast.makeText(activity, "Sto aspettando ulteriori giocatori!", Toast.LENGTH_SHORT).show();

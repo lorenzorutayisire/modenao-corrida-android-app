@@ -19,5 +19,25 @@ public abstract class Command {
         return result.toArray(new String[result.size()]);
     }
 
+    public static int toInt(String arg) {
+        int result;
+        try {
+            result = Integer.parseInt(arg);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Cannot parse '" + arg + "' to 'int'");
+        }
+        return result;
+    }
+    
+    public static float toFloat(String arg) {
+        float result;
+        try {
+            result = Float.parseFloat(arg);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Cannot parse '" + arg + "' to 'float'");
+        }
+        return result;
+    }
+
     public abstract Command decode(String[] split);
 }

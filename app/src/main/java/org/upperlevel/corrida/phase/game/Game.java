@@ -7,18 +7,16 @@ import org.upperlevel.corrida.command.Command;
 import org.upperlevel.corrida.phase.Corrida;
 import org.upperlevel.corrida.phase.Phase;
 import org.upperlevel.corrida.phase.PhaseManager;
+import org.upperlevel.corrida.phase.game.lobby.InsertNamePhase;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -61,13 +59,20 @@ public class Game extends PhaseManager implements Phase {
         }
     }
 
-    public void emit(Command... command) throws IOException {
+    public void emit(Command... commands) throws IOException {
         OutputStream out = socket.getOutputStream();
-        new AsyncCommandSend(out).execute(command);
+        new AsyncCommandSend(out).execute(commands);
+
+        Log.i(TAG, "Enqueued to send:");
+        for (Command cmd : commands) {
+            Log.i(TAG, "- " + cmd.toString());
+        }
     }
 
     public String receive() throws IOException {
-        return in.readLine();
+        String rec = in.readLine();
+        Log.i(TAG, "Received: " + rec);
+        return rec;
     }
 
     public void addPlayer(Player player) {

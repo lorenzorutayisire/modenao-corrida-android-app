@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/play_player_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Turno di:"
+                android:textAlignment="center"
+                android:textColor="#DD2C00"
+                android:textSize="48sp" />
+
+            <TextView
+                android:id="@+id/play_player_val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Yolo"
+                android:textAlignment="center"
+                android:textSize="48sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/play_theme_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tema:"
+                android:textAlignment="center"
+                android:textColor="#DD2C00"
+                android:textSize="48sp" />
+
+            <TextView
+                android:id="@+id/play_theme_val"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="..."
+                android:textAlignment="center"
+                android:textSize="48sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

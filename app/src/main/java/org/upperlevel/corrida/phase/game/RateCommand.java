@@ -1,4 +1,4 @@
-package org.upperlevel.corrida.phase.game.playing;
+package org.upperlevel.corrida.phase.game;
 
 import org.upperlevel.corrida.command.Command;
 
@@ -6,12 +6,12 @@ import lombok.Getter;
 
 public class RateCommand extends Command {
     @Getter
-    private int rate;
+    private float rate;
 
     public RateCommand() {
     }
 
-    public RateCommand(int rate) {
+    public RateCommand(float rate) {
         this.rate = rate;
     }
 
