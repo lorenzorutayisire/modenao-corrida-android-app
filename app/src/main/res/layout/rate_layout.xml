@@ -17,7 +17,6 @@
             android:layout_height="wrap_content"
             android:text="Vota:"
             android:textAlignment="center"
-            android:textColor="#DD2C00"
             android:textSize="48sp" />
 
         <RatingBar
@@ -34,6 +33,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Invia"
-            android:textSize="48sp" />
+            android:textSize="32sp" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

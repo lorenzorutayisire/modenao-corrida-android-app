@@ -1,21 +1,19 @@
 package org.upperlevel.corrida.phase.game;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Player {
     @Getter
     private String name;
 
     @Getter
-    private int points;
+    @Setter
+    private float score;
 
     public Player(String name) {
         this.name = name;
-        points = 0;
-    }
-
-    public void updatePoints(int points) {
-        this.points = points;
+        this.score = 0f;
     }
 
     @Override

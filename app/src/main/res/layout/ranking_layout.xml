@@ -14,7 +14,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Classifica:"
-            android:textColor="#DD2C00"
             android:textSize="48sp" />
 
         <ScrollView
@@ -22,27 +21,11 @@
             android:layout_height="match_parent">
 
             <LinearLayout
+                android:id="@+id/ranking_val"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Giuseppe91012000: 1000"
-                    android:textSize="28sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Giuseppe91012000: 1000"
-                    android:textSize="28sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Giuseppe91012000: 1000"
-                    android:textSize="28sp" />
             </LinearLayout>
         </ScrollView>
 

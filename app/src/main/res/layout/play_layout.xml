@@ -21,7 +21,6 @@
                 android:layout_height="wrap_content"
                 android:text="Turno di:"
                 android:textAlignment="center"
-                android:textColor="#DD2C00"
                 android:textSize="48sp" />
 
             <TextView
@@ -47,7 +46,6 @@
                 android:layout_height="wrap_content"
                 android:text="Tema:"
                 android:textAlignment="center"
-                android:textColor="#DD2C00"
                 android:textSize="48sp" />
 
             <TextView

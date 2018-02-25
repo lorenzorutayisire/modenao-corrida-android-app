@@ -14,8 +14,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
@@ -65,7 +67,7 @@ public class Game extends PhaseManager implements Phase {
 
         Log.i(TAG, "Enqueued to send:");
         for (Command cmd : commands) {
-            Log.i(TAG, "- " + cmd.toString());
+            Log.i(TAG, "- " + cmd.encode());
         }
     }
 
@@ -97,6 +99,27 @@ public class Game extends PhaseManager implements Phase {
 
     public Collection<Player> getPlayers() {
         return players.values();
+    }
+
+    /**
+     * Gets the ranking.
+     * A list of players ordered by the one with more points to the poor one.
+     */
+    public List<Player> getRanking() {
+        List<Player> result = new ArrayList<>(getPlayers());
+        boolean error = false;
+        do {
+            for (int i = 0; i < result.size() - 1; i++) {
+                Player curr = result.get(i);
+                Player next = result.get(i + 1);
+                if (curr.getScore() <= next.getScore()) {
+                    result.set(i, next);
+                    result.set(i + 1, curr);
+                    error = true;
+                }
+            }
+        } while (error);
+        return result;
     }
 
     /**

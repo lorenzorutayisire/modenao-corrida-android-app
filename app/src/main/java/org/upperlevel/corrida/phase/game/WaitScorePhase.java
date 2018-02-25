@@ -15,18 +15,18 @@ public class WaitScorePhase extends Thread implements Phase {
     private static final String TAG = "WaitScorePhase";
 
     @Getter
+    private Performance performance;
+
+    @Getter
     private Activity activity;
 
     @Getter
     private Game game;
 
-    @Getter
-    private Performance parent;
-
-    public WaitScorePhase(Performance parent) {
-        this.activity = parent.getActivity();
-        this.game = parent.getGame();
-        this.parent = parent;
+    public WaitScorePhase(Performance performance) {
+        this.performance = performance;
+        this.activity = performance.getActivity();
+        this.game = performance.getGame();
     }
 
     @Override
@@ -50,10 +50,16 @@ public class WaitScorePhase extends Thread implements Phase {
             return;
         }
         if (command[0].equals("rate_end")) {
+            Player performer = performance.getPerformer();
+            // Sets the score
             float score = Command.toFloat(command[1]);
+            performer.setScore(score);
+            Log.i(TAG, "Score set to player "  + performer.getName() + " to: " + score);
+
+            // Changes the phase
             activity.runOnUiThread(() -> {
                 Log.i(TAG, "Final rate received! Changing phase");
-                parent.setPhase(new BridgePhase(parent, score));
+                performance.setPhase(new BridgePhase(performance, score));
             });
         } else {
             throw new IllegalStateException("Received unexpected command: " + command[0]);
