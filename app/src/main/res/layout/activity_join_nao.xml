@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FF8A65">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#FFEBEE">
 
         <TextView
             android:id="@+id/form_title"
@@ -17,8 +16,8 @@
             android:gravity="center"
             android:padding="20dp"
             android:text="@string/join_nao_title"
-            android:textColor="#ffffff"
-            android:textSize="22sp" />
+            android:textColor="#E53935"
+            android:textSize="28sp" />
 
         <TextView
             android:id="@+id/hostname_title"
@@ -26,7 +25,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="@string/join_nao_hostname"
-            android:textColor="#ffffff"
+            android:textColor="#E53935"
             android:textSize="24sp" />
 
         <EditText
@@ -49,7 +48,7 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="@string/join_nao_port"
-            android:textColor="#ffffff"
+            android:textColor="#E53935"
             android:textSize="24sp" />
 
         <EditText
@@ -70,9 +69,9 @@
             android:id="@+id/connect"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#F4511E"
             android:text="@string/join_nao_submit"
-            android:textColor="#ffffff"
+            android:background="#FFCDD2"
+            android:textColor="#E53935"
             android:textSize="32sp" />
 
         <ProgressBar

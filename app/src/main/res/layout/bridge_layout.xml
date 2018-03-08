@@ -7,7 +7,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#FFEBEE">
 
         <TextView
             android:id="@+id/bridge_player"
@@ -15,6 +16,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="... (nome del giocatore)"
+            android:textColor="#E53935"
             android:textSize="28sp" />
 
         <TextView
@@ -23,6 +25,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="... (ha/hai guadagnato)"
+            android:textColor="#E53935"
             android:textSize="28sp" />
 
         <TextView
@@ -31,6 +34,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="... (punti)"
+            android:textColor="#E53935"
             android:textSize="28sp" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

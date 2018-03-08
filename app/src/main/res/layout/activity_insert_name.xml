@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF8A65"
     android:weightSum="1">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#FFEBEE"
         android:orientation="vertical">
 
         <LinearLayout
@@ -16,8 +16,8 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:gravity="center_vertical"
-            android:padding="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/name_title"
@@ -25,8 +25,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|center"
                 android:text="@string/insert_name_title"
-                android:textColor="#ffffff"
-                android:textSize="24sp" />
+                android:textColor="#E53935"
+                android:textSize="28sp" />
 
             <EditText
                 android:id="@+id/name_input"
@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -55,9 +56,9 @@
                 android:id="@+id/name_submit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#F4511E"
+                android:background="#FFCDD2"
                 android:text="@string/insert_name_submit"
-                android:textColor="#ffffff"
+                android:textColor="#E53935"
                 android:textSize="32sp" />
         </LinearLayout>
     </LinearLayout>

@@ -2,7 +2,6 @@ package org.upperlevel.corrida.phase.game;
 
 import android.app.Activity;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -12,9 +11,6 @@ import org.upperlevel.corrida.R;
 import org.upperlevel.corrida.phase.Phase;
 
 import lombok.Getter;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class RankingPhase implements Phase {
     public static final String TAG = "Ranking";

@@ -6,7 +6,7 @@
     <string name="main_join_nao_button">Connettiti ad un NAO remoto</string>
 
     <!-- join_nao -->
-    <string name="join_nao_title">Connettiti ad un NAO remoto</string>
+    <string name="join_nao_title">Accedi un NAO remoto</string>
     <string name="join_nao_hostname">Indirizzo di rete:</string>
     <string name="join_nao_port">Porta:</string>
     <string name="join_nao_invalid_port">Porta invalida (deve essere un numero tra 0 e 65535)</string>

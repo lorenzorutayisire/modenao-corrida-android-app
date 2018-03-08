@@ -1,36 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:weightSum="1">
+        android:weightSum="1"
+        android:background="#FFEBEE">
 
+        <!-- Text here is just a sample -->
         <TextView
             android:id="@+id/ranking_row_pos"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.33"
+            android:layout_weight="0.3"
+            android:paddingLeft="10sp"
             android:text="1."
-            android:textSize="32sp" />
+            android:textColor="#E53935"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/ranking_row_player"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.33"
-            android:text="Wai"
-            android:textSize="32sp" />
+            android:layout_weight="0.6"
+            android:text="Giovanni"
+            android:textColor="#E53935"
+            android:textSize="24sp" />
 
         <TextView
             android:id="@+id/ranking_row_score"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.33"
+            android:layout_weight="0.1"
             android:text="100"
-            android:textSize="32sp" />
+            android:textColor="#E53935"
+            android:textSize="24sp" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

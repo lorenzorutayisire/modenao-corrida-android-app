@@ -7,7 +7,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="#FFEBEE">
 
         <TextView
             android:id="@+id/wr_str"
@@ -15,6 +16,7 @@
             android:layout_height="wrap_content"
             android:text="Aspettando i voti..."
             android:textAlignment="center"
+            android:textColor="#E53935"
             android:textSize="32sp" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

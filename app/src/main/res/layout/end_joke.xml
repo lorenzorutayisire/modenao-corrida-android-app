@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,17 +9,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
+        <Button
+            android:id="@+id/end_joke"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="TI SEI DIVERTITO EH?"
-            android:textAlignment="center"
-            android:textAllCaps="true"
-            android:textColor="#000000"
-            android:textSize="40sp"
-            tools:layout_editor_absoluteX="-9dp"
-            tools:layout_editor_absoluteY="2dp" />
+            android:background="#FFCDD2"
+            android:text="Fine battuta"
+            android:textColor="#E53935"
+            android:textSize="48dp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="8dp" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

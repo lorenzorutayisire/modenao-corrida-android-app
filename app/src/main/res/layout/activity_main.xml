@@ -13,21 +13,25 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
-            android:background="#F4511E"
+            android:background="#FFEBEE"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:text="@string/main_search_nao_button"
             android:textAllCaps="false"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textColor="#E53935"
+            android:textSize="28sp" />
 
         <Button
             android:id="@+id/join_nao_button"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
-            android:background="#F4511E"
+            android:background="#FFEBEE"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:text="@string/main_join_nao_button"
             android:textAllCaps="false"
-            android:textColor="#ffffff"
-            android:textSize="20sp" />
+            android:textColor="#E53935"
+            android:textSize="28sp" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
