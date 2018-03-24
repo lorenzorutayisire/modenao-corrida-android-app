@@ -12,14 +12,18 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.concurrent.TimeoutException;
 
 import lombok.Getter;
 
 public class SearchNaoPhase extends Thread implements Phase {
     private static final int DEFAULT_PORT = 25565;
 
-    private static final String MAGIC_BROADCAST_REQUEST = "corrida_discovery";
-    private static final String MAGIC_BROADCAST_RESPONSE = "corrida_response";
+    private static final byte[] MAGIC_BROADCAST_REQUEST = "corrida_discovery".getBytes(Charset.forName("utf-8"));
+    private static final byte[] MAGIC_BROADCAST_RESPONSE = "corrida_response".getBytes(Charset.forName("utf-8"));
 
     @Getter
     private FetchPhase parent;
@@ -52,31 +56,40 @@ public class SearchNaoPhase extends Thread implements Phase {
         try {
             socket = new DatagramSocket();
         } catch (IOException e) {
-            throw new IllegalStateException("Cannot create socket: " + e);
+            throw new IllegalStateException("Cannot create socket: ", e);
         }
         try {
             socket.setBroadcast(true);
         } catch (SocketException e) {
-            throw new IllegalStateException("Cannot create a broadcast socket: " + e);
+            throw new IllegalStateException("Cannot create a broadcast socket: ", e);
+        }
+        try {
+            socket.setSoTimeout(200);
+        } catch (SocketException e) {
+            throw new IllegalStateException("Error while changing socket timeout", e);
         }
         // sends broadcast packet
+        InetAddress broadcast;
         try {
-            InetAddress broadcast = InetAddress.getByName("255.255.255.255"); // creates broadcast address
-            byte[] request = MAGIC_BROADCAST_REQUEST.getBytes("UTF-8");
-            socket.send(new DatagramPacket(request, request.length, broadcast, DEFAULT_PORT)); // broadcasts udp packet to the lan
+            broadcast = InetAddress.getByName("255.255.255.255"); // creates broadcast address
         } catch (IOException e) {
             throw new IllegalStateException("Cannot send broadcast packet: " + e);
         }
         // listens for broadcast response
         DatagramPacket response;
         try {
-            String message;
+            byte[] message;
+            byte[] buffer = new byte[MAGIC_BROADCAST_RESPONSE.length];
             do {
-                byte[] buffer = new byte[MAGIC_BROADCAST_RESPONSE.length()];
+                socket.send(new DatagramPacket(MAGIC_BROADCAST_REQUEST, MAGIC_BROADCAST_REQUEST.length, broadcast, DEFAULT_PORT)); // broadcasts udp packet to the lan
                 response = new DatagramPacket(buffer, buffer.length);
-                socket.receive(response);
-                message = new String(response.getData(), "UTF-8");
-            } while (!message.equals(MAGIC_BROADCAST_RESPONSE));
+                try {
+                    socket.receive(response);
+                    message = response.getData();
+                } catch (SocketTimeoutException e) {
+                    message = new byte[]{};
+                }
+            } while (!Arrays.equals(message, MAGIC_BROADCAST_RESPONSE));
         } catch (IOException e) {
             throw new IllegalStateException("Cannot receive address packet: " + e);
         }
