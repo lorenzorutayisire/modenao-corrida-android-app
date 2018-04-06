@@ -14,7 +14,7 @@ import java.io.IOException;
 import lombok.Getter;
 
 public class BridgePhase extends Thread implements Phase {
-    private static final String TAG = "GainedScorePhase";
+    private static final String TAG = "BridgePhase";
 
     /**
      * The performance that is owning this phase.

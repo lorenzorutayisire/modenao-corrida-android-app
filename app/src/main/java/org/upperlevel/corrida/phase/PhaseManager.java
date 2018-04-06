@@ -1,5 +1,7 @@
 package org.upperlevel.corrida.phase;
 
+import android.util.Log;
+
 import lombok.Getter;
 
 public class PhaseManager {
@@ -12,6 +14,7 @@ public class PhaseManager {
         }
         currentPhase = phase;
         if (currentPhase != null) {
+            Log.i("PhaseManager", "Calling " + phase.getClass().getSimpleName() + "#onStart()");
             currentPhase.onStart();
         }
     }

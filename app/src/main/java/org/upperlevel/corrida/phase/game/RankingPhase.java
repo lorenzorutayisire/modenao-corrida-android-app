@@ -58,8 +58,11 @@ public class RankingPhase implements Phase {
     @Override
     public void onStart() {
         activity.setContentView(R.layout.ranking_layout);
+        Log.i("RankingPhase", "Set up layout");
 
         rankingLayout = activity.findViewById(R.id.ranking_val);
+        Log.i("RankingPhase", "Got ranking layout");
+
         buildRanking();
     }
 
