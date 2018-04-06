@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:weightSum="1"
-        android:background="#FFEBEE">
+        android:background="#FFF176">
 
         <!-- Text here is just a sample -->
         <TextView
@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.6"
-            android:text="Giovanni"
+            android:text="Unknown"
             android:textColor="#E53935"
             android:textSize="24sp" />
 

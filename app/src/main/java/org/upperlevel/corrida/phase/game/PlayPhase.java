@@ -5,22 +5,20 @@ import android.util.Log;
 import android.widget.TextView;
 
 import org.upperlevel.corrida.R;
-import org.upperlevel.corrida.command.Command;
-import org.upperlevel.corrida.phase.Phase;
 import org.upperlevel.corrida.phase.PhaseManager;
-
-import java.io.IOException;
 
 import lombok.Getter;
 
-public class PlayPhase extends PhaseManager implements Phase {
-    public static final String TAG = "PlayPhase";
+/**
+ * This phase starts when the performance_start packet has received.
+ * It waits for performance information such as theme and rate_start.
+ */
+public class PlayPhase extends PhaseManager<InnerGamePhase> implements InnerGamePhase {
+    @Getter
+    private PerformancePhase performance;
 
     @Getter
-    private Performance performance;
-
-    @Getter
-    private Game game;
+    private GamePhase game;
 
     @Getter
     private Activity activity;
@@ -28,74 +26,54 @@ public class PlayPhase extends PhaseManager implements Phase {
     @Getter
     private TextView themeField;
 
-    @Getter
-    private Listener listener;
-
-    public PlayPhase(Performance performance) {
+    public PlayPhase(PerformancePhase performance) {
         this.performance = performance;
         this.game = performance.getGame();
         this.activity = performance.getActivity();
     }
 
     @Override
-    public void onStart() {
+    public void onLayoutSetup() {
         activity.setContentView(R.layout.play_layout);
         ((TextView) activity.findViewById(R.id.play_player_val)).setText(performance.getPerformer().getName());
         themeField = activity.findViewById(R.id.play_theme_val);
-
-        listener = new Listener();
-        listener.start();
     }
 
     @Override
     public void onStop() {
-        listener.interrupt();
+        setPhase(null);
     }
 
-    public class Listener extends Thread {
-        @Override
-        public void run() {
-            String[] command;
-            // performance_theme
-            Log.i(TAG, "Wait for 'performance_theme' packet");
-            try {
-                command = Command.split(game.receive());
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-            if (command[0].equals("performance_theme")) {
-                String theme = command[1];
-                Log.i(TAG, "Received performance theme: " + theme);
+    @Override
+    public boolean onCommandAsync(Command cmd) {
+        switch (cmd.name) {
+            case "performance_theme":
+                String theme = cmd.args[0];
                 performance.setTheme(theme);
                 activity.runOnUiThread(() -> {
                     themeField.setText(theme);
-                    Log.i(TAG, "Theme updated!");
+                    Log.i("Performance", "Theme updated");
 
-                    if (theme.equals("battuta") && game.getMe().equals(performance.getPerformer())) {
+                    if (theme.equals("battuta") && Game.g().getMe().equals(performance.getPerformer())) {
                         setPhase(new EndJokePhase(PlayPhase.this));
                     }
                 });
-            }
-            // rate_start
-            Log.i(TAG, "Wait for 'rate_start' packet");
-            try {
-                command = Command.split(game.receive());
-            } catch (IOException e) {
-                e.printStackTrace();
-                return;
-            }
-            if (command[0].equals("rate_start")) {
-                if (!game.getMe().equals(performance.getPerformer())) {
-                    Log.i(TAG, "You have to rate!");
-                    activity.runOnUiThread(() ->
-                            performance.setPhase(new RatePhase(performance)));
+                return true;
+            case "rate_start":
+                if (!Game.g().getMe().equals(performance.getPerformer())) {
+                    activity.runOnUiThread(() -> {
+                        Log.i("Performance", "Now players should rate");
+                        performance.setPhase(new RatePhase(performance));
+                    });
                 } else {
-                    Log.i(TAG, "Performance end, you have to wait others to rate...");
-                    activity.runOnUiThread(() ->
-                            performance.setPhase(new WaitScorePhase(performance)));
+                    activity.runOnUiThread(() -> {
+                        Log.i("Performance", "PerformancePhase end. Waiting for ratings");
+                        performance.setPhase(new WaitScorePhase(performance));
+                    });
                 }
-            }
+                return true;
+            default:
+                return getPhase().onCommandAsync(cmd); // useless
         }
     }
 }

@@ -1,6 +1,5 @@
 package org.upperlevel.corrida.phase.fetch;
 
-import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -9,21 +8,21 @@ import android.widget.Toast;
 
 import org.upperlevel.corrida.R;
 import org.upperlevel.corrida.phase.Phase;
-import org.upperlevel.corrida.phase.game.Game;
+import org.upperlevel.corrida.phase.GameActivity;
+import org.upperlevel.corrida.phase.game.GamePhase;
 
 import java.io.IOException;
 import java.net.Socket;
 
 import lombok.Getter;
 
+/**
+ * In this phase the user is asked to insert hostname and the port of the remote nao.
+ * After inserting them, connects via tcp to the game server.
+ */
 public class JoinNaoPhase implements Phase {
-    private static final String TAG = JoinNaoPhase.class.getSimpleName();
-
     @Getter
-    private FetchPhase parent;
-
-    @Getter
-    private Activity activity;
+    private GameActivity activity;
 
     @Getter
     private EditText hostnameTextField;
@@ -40,9 +39,8 @@ public class JoinNaoPhase implements Phase {
     @Getter
     private Thread establishConnectionThread;
 
-    public JoinNaoPhase(FetchPhase parent) {
-        this.parent = parent;
-        this.activity = parent.getActivity();
+    public JoinNaoPhase(GameActivity activity) {
+        this.activity = activity;
     }
 
     private void initFields() {
@@ -62,8 +60,9 @@ public class JoinNaoPhase implements Phase {
     @Override
     public void onStop() {
         if (establishConnectionThread != null && establishConnectionThread.isAlive()) {
-            establishConnectionThread.start();
+            establishConnectionThread.interrupt();
         }
+        Log.i("GameConnector", "Join nao stopped");
     }
 
     public class OnNaoJoin implements View.OnClickListener {
@@ -74,9 +73,9 @@ public class JoinNaoPhase implements Phase {
             hostnameErrorField.setText("");
             if (hostname.isEmpty()) {
                 hostnameErrorField.setText("Indirizzo invalido");
-                Log.w(TAG, "Found invalid hostname");
+                Log.w("JoinNao", "Found invalid hostname");
             }
-            Log.i(TAG, "Hostname is correct");
+            Log.i("JoinNao", "Hostname is correct");
 
             // Port
             int port;
@@ -85,15 +84,15 @@ public class JoinNaoPhase implements Phase {
                 port = Integer.parseInt(portTextField.getText().toString());
             } catch (NumberFormatException e) {
                 portErrorField.setText("Dovresti inserire un numero intero");
-                Log.w(TAG, "Invalid port number format");
+                Log.w("JoinNao", "Invalid port number format");
                 return;
             }
             if (port < 0 || port >= 65535) {
                 portErrorField.setText("Dovresti inserire un numero compreso tra 0 e 65535");
-                Log.w(TAG, "Invalid port number");
+                Log.w("JoinNao", "Invalid port number");
                 return;
             }
-            Log.i(TAG, "Port number is correct");
+            Log.i("JoinNao", "Port number is correct");
 
             // Connection
             establishConnectionThread = new EstablishConnection(hostname, port);
@@ -116,17 +115,17 @@ public class JoinNaoPhase implements Phase {
         @Override
         public void run() {
             Socket socket;
-            Log.i(TAG, "Establishing connection...");
+            Log.i("JoinNao", "Establishing connection");
             try {
                 socket = new Socket(hostname, port);
             } catch (IOException e) {
                 activity.runOnUiThread(() -> Toast.makeText(activity, "Impossibile connettersi", Toast.LENGTH_SHORT).show());
                 return;
             }
-            Log.i(TAG, "Connection established to endpoint");
+            Log.i("JoinNao", "Connection established to endpoint");
             activity.runOnUiThread(() -> {
-                parent.getParent().setPhase(new Game(parent.getParent(), socket));
-                Log.i(TAG, "Changing to next phase.");
+                activity.getRoot().setPhase(new GamePhase(activity, socket));
+                Log.i("JoinNao", "Changing to next phase.");
             });
         }
     }

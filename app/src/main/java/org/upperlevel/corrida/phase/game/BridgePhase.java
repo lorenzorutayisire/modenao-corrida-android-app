@@ -6,24 +6,20 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.upperlevel.corrida.R;
-import org.upperlevel.corrida.command.Command;
-import org.upperlevel.corrida.phase.Phase;
-
-import java.io.IOException;
 
 import lombok.Getter;
 
-public class BridgePhase extends Thread implements Phase {
+/**
+ * This phase shows to the player the score gained by the performer after rates.
+ */
+public class BridgePhase implements InnerGamePhase {
     private static final String TAG = "BridgePhase";
 
-    /**
-     * The performance that is owning this phase.
-     */
     @Getter
-    private Performance performance;
+    private PerformancePhase performance;
 
     @Getter
-    private Game game;
+    private GamePhase game;
 
     @Getter
     private Activity activity;
@@ -31,7 +27,7 @@ public class BridgePhase extends Thread implements Phase {
     @Getter
     private float score;
 
-    public BridgePhase(Performance performance, float score) {
+    public BridgePhase(PerformancePhase performance, float score) {
         this.performance = performance;
         this.game = performance.getGame();
         this.activity = performance.getActivity();
@@ -45,7 +41,7 @@ public class BridgePhase extends Thread implements Phase {
 
         Player performer = performance.getPerformer();
 
-        if (game.getMe().equals(performer)) {
+        if (Game.g().getMe().equals(performer)) {
             playerTxt.setVisibility(View.INVISIBLE);
             descTxt.setText("Hai guadagnato:");
             scoreTxt.setText(score + "");
@@ -57,47 +53,33 @@ public class BridgePhase extends Thread implements Phase {
     }
 
     @Override
-    public void onStart() {
+    public void onLayoutSetup() {
         activity.setContentView(R.layout.bridge_layout);
         decorLayout();
-        start();
     }
 
     @Override
     public void onStop() {
-        interrupt();
     }
 
-    /**
-     * Listens for phase change:
-     * 'performance_start' -> starts a new performance
-     * 'game_end' -> ends the game and shows the ranking
-     */
     @Override
-    public void run() {
-        String[] command;
-        try {
-            command = Command.split(game.receive());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-        switch (command[0]) {
+    public boolean onCommandAsync(Command cmd) {
+        switch (cmd.name) {
             case "performance_start":
-                Player performer = game.getPlayer(command[1]);
+                Player performer = Game.g().getPlayer(cmd.args[0]);
                 activity.runOnUiThread(() -> {
                     Log.i(TAG, "New performance started! Preparing new phase...");
-                    game.setPhase(new Performance(game, performer));
+                    game.setPhase(new PerformancePhase(game, performer));
                 });
-                break;
+                return true;
             case "game_end":
                 activity.runOnUiThread(() -> {
                     Log.i(TAG, "Game end! Preparing to show ranking...");
                     game.setPhase(new RankingPhase(game));
                 });
-                break;
+                return true;
             default:
-                throw new IllegalStateException("Received unhandled packet: " + command[0]);
+                return false;
         }
     }
 }

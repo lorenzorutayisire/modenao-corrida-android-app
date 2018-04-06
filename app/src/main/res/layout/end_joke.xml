@@ -13,7 +13,7 @@
             android:id="@+id/end_joke"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#FFCDD2"
+            android:background="#FFF176"
             android:text="Fine battuta"
             android:textColor="#E53935"
             android:textSize="48dp"

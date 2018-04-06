@@ -1,10 +1,11 @@
 package org.upperlevel.corrida.phase.fetch;
 
-import android.app.Activity;
+import android.util.Log;
 
 import org.upperlevel.corrida.R;
 import org.upperlevel.corrida.phase.Phase;
-import org.upperlevel.corrida.phase.game.Game;
+import org.upperlevel.corrida.phase.GameActivity;
+import org.upperlevel.corrida.phase.game.GamePhase;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -15,10 +16,13 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.concurrent.TimeoutException;
 
 import lombok.Getter;
 
+/**
+ * This phase searches the nao locally using udp broadcast.
+ * When udp socket receives a specific response, connects to the sender of the packet (hopefully the nao) via tcp.
+ */
 public class SearchNaoPhase extends Thread implements Phase {
     private static final int DEFAULT_PORT = 25565;
 
@@ -26,14 +30,10 @@ public class SearchNaoPhase extends Thread implements Phase {
     private static final byte[] MAGIC_BROADCAST_RESPONSE = "corrida_response".getBytes(Charset.forName("utf-8"));
 
     @Getter
-    private FetchPhase parent;
+    private GameActivity activity;
 
-    @Getter
-    private Activity activity;
-
-    public SearchNaoPhase(FetchPhase parent) {
-        this.parent = parent;
-        this.activity = parent.getActivity();
+    public SearchNaoPhase(GameActivity activity) {
+        this.activity = activity;
     }
 
     @Override
@@ -47,11 +47,13 @@ public class SearchNaoPhase extends Thread implements Phase {
         if (isAlive()) {
             interrupt();
         }
+        Log.i("GameConnector", "Search nao stopped");
     }
 
     @Override
     public void run() {
-        // creates broadcast udp socket
+        // ---------------------------------------------------------------- Connects via udp
+        Log.i("GameConnector", "Creating udp broadcast");
         DatagramSocket socket;
         try {
             socket = new DatagramSocket();
@@ -68,14 +70,16 @@ public class SearchNaoPhase extends Thread implements Phase {
         } catch (SocketException e) {
             throw new IllegalStateException("Error while changing socket timeout", e);
         }
-        // sends broadcast packet
+
+        Log.i("GameConnector", "Creating broadcast address");
         InetAddress broadcast;
         try {
             broadcast = InetAddress.getByName("255.255.255.255"); // creates broadcast address
         } catch (IOException e) {
             throw new IllegalStateException("Cannot send broadcast packet: " + e);
         }
-        // listens for broadcast response
+
+        Log.i("GameConnector", "Sending broadcast address");
         DatagramPacket response;
         try {
             byte[] message;
@@ -93,9 +97,12 @@ public class SearchNaoPhase extends Thread implements Phase {
         } catch (IOException e) {
             throw new IllegalStateException("Cannot receive address packet: " + e);
         }
-        // closes socket
+
+        Log.i("GameConnector", "Response received, closing udp socket");
         socket.close();
-        // now we have the nao host
+
+        // ---------------------------------------------------------------- Connects via tcp
+        Log.i("GameConnector", "Opening tcp socket");
         InetAddress address = response.getAddress();
         Socket tcpSocket;
         try {
@@ -103,6 +110,11 @@ public class SearchNaoPhase extends Thread implements Phase {
         } catch (IOException e) {
             throw new IllegalStateException("Cannot connect to remote: " + address + ":" + DEFAULT_PORT);
         }
-        activity.runOnUiThread(() -> parent.setPhase(new Game(parent.getParent(), tcpSocket)));
+        Log.i("GameConnector", "Connected");
+
+        activity.runOnUiThread(() -> {
+            Log.i("GameConnector", "Now the game can start");
+            activity.getRoot().setPhase(new GamePhase(activity, tcpSocket));
+        });
     }
 }

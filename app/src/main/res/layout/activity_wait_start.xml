@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="#FFEBEE"
+        android:background="#FFF176"
         android:orientation="vertical">
 
         <LinearLayout
@@ -47,9 +47,9 @@
                 android:id="@+id/start_game_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FFCDD2"
+                android:background="#E53935"
                 android:text="@string/start_game_submit"
-                android:textColor="#E53935"
+                android:textColor="#FFF176"
                 android:textSize="32sp" />
         </LinearLayout>
 

@@ -1,18 +1,8 @@
 package org.upperlevel.corrida.phase.game;
 
-import android.app.Activity;
-import android.util.Log;
-
-import org.upperlevel.corrida.command.Command;
-import org.upperlevel.corrida.phase.Corrida;
-import org.upperlevel.corrida.phase.Phase;
-import org.upperlevel.corrida.phase.PhaseManager;
-import org.upperlevel.corrida.phase.game.lobby.InsertNamePhase;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,78 +13,42 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Game extends PhaseManager implements Phase {
-    public static final String TAG = "Game";
+public class Game {
+    private static Game instance;
 
-    @Getter
-    private Corrida parent;
-
-    @Getter
-    private Activity activity;
-
-    @Getter
-    private Socket socket;
-
-    @Getter
-    private BufferedReader in;
-
-    /**
-     * The player that is holding the app.
-     * Must be setup!
-     */
     @Getter
     @Setter
-    private Player me; // The player that is currently using the app
+    private Player me = null;
+
+    private final Map<String, Player> players = new HashMap<>();
 
     @Getter
-    private Map<String, Player> players = new HashMap<>();
+    private final Socket socket;
 
-    public Game(Corrida parent, Socket socket) {
-        this.parent = parent;
-        this.activity = parent.getActivity();
+    @Getter
+    private final BufferedReader reader;
 
+    public Game(Socket socket) {
         this.socket = socket;
         try {
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
-            throw new IllegalStateException("Cannot get input stream", e);
+            throw new IllegalStateException(e);
         }
+
+        instance = this; // just to simplify usage
     }
 
-    public void emit(Command... commands) throws IOException {
-        OutputStream out = socket.getOutputStream();
-        new AsyncCommandSend(out).execute(commands);
-
-        Log.i(TAG, "Enqueued to send:");
-        for (Command cmd : commands) {
-            Log.i(TAG, "- " + cmd.encode());
-        }
+    public Player addPlayer(Player player) {
+        return players.put(player.getName(), player);
     }
 
-    public String receive() throws IOException {
-        String rec = in.readLine();
-        Log.i(TAG, "Received: " + rec);
-        return rec;
-    }
-
-    public void addPlayer(Player player) {
-        if (players.put(player.getName(), player) == null) {
-            Log.i(TAG, "Added the player: \"" + player.getName() + "\" (count: " + players.size() + ").");
-        } else {
-            Log.w(TAG, "Replaced the player: \"" + player.getName() + "\" (count: " + players.size() + ").");
-        }
+    public Player removePlayer(String name) {
+        return players.remove(name);
     }
 
     public Player getPlayer(String name) {
         return players.get(name);
-    }
-
-    public void removePlayer(String name) {
-        if (players.remove(name) != null) {
-            Log.i(TAG, "Removed the player \"" + name + "\" (count: " + players.size() + ")");
-        } else {
-            Log.w(TAG, "Attempted to remove the player \"" + name + "\" (count: " + players.size() + "). Failed.");
-        }
     }
 
     public Collection<Player> getPlayers() {
@@ -107,8 +61,9 @@ public class Game extends PhaseManager implements Phase {
      */
     public List<Player> getRanking() {
         List<Player> result = new ArrayList<>(getPlayers());
-        boolean error = false;
+        boolean error;
         do {
+            error = false;
             for (int i = 0; i < result.size() - 1; i++) {
                 Player curr = result.get(i);
                 Player next = result.get(i + 1);
@@ -124,24 +79,36 @@ public class Game extends PhaseManager implements Phase {
 
     /**
      * Can the game start?
-     * Currently the game can start only if it has more than 1 player.
+     * Currently the game can start only if it has more than one player.
      */
     public boolean canStart() {
         return players.size() > 1;
     }
 
-    @Override
-    public void onStart() {
-        setPhase(new InsertNamePhase(this));
+    public void emit(Command command) throws IOException {
+        new AsyncCommandSend(socket.getOutputStream()).execute(command);
     }
 
-    @Override
-    public void onStop() {
-        try {
-            socket.close();
-            Log.i(TAG, "Connection closed.");
-        } catch (IOException e) {
-            e.printStackTrace();
+    public Command receive() throws IOException {
+        String line = reader.readLine();
+        if (line != null) {
+            return Command.fromRaw(line);
+        } else {
+            throw new IOException("Connection closed");
         }
+    }
+
+    public void close() throws IOException {
+        reader.close();
+        socket.close();
+
+        instance = null;
+    }
+
+    /**
+     * Be careful on using this. It only exists when the game is ongoing.
+     */
+    public static Game g() {
+        return instance;
     }
 }

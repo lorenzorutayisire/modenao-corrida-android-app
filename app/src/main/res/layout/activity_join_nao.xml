@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#FFEBEE">
+        android:background="#FFF176">
 
         <TextView
             android:id="@+id/form_title"
@@ -70,8 +70,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/join_nao_submit"
-            android:background="#FFCDD2"
-            android:textColor="#E53935"
+            android:background="#E53935"
+            android:textColor="#FFF176"
             android:textSize="32sp" />
 
         <ProgressBar

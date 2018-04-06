@@ -6,20 +6,21 @@ import android.view.View;
 import android.widget.RatingBar;
 
 import org.upperlevel.corrida.R;
-import org.upperlevel.corrida.phase.Phase;
 
 import java.io.IOException;
 
 import lombok.Getter;
 
-public class RatePhase implements Phase {
-    public static final String TAG = "RatePhase";
+/**
+ * During this phase the player can vote the performance of another.
+ * This phase listens for no packet, just sends the rating.
+ */
+public class RatePhase implements InnerGamePhase {
+    @Getter
+    private PerformancePhase performance;
 
     @Getter
-    private Performance performance;
-
-    @Getter
-    private Game game;
+    private GamePhase game;
 
     @Getter
     private Activity activity;
@@ -27,14 +28,14 @@ public class RatePhase implements Phase {
     @Getter
     private RatingBar ratingBar;
 
-    public RatePhase(Performance performance) {
+    public RatePhase(PerformancePhase performance) {
         this.performance = performance;
         this.game = performance.getGame();
         this.activity = performance.getActivity();
     }
 
     @Override
-    public void onStart() {
+    public void onLayoutSetup() {
         activity.setContentView(R.layout.rate_layout);
         activity.findViewById(R.id.rate_submit).setOnClickListener(new OnSubmit());
         ratingBar = activity.findViewById(R.id.rate_ratebar);
@@ -44,13 +45,18 @@ public class RatePhase implements Phase {
     public void onStop() {
     }
 
+    @Override
+    public boolean onCommandAsync(Command cmd) {
+        return false;
+    }
+
     public class OnSubmit implements View.OnClickListener {
         @Override
         public void onClick(View view) {
             float rating = ratingBar.getRating();
             try {
-                Log.i(TAG, "Submitting rate " + rating + "...");
-                game.emit(new RateCommand(rating));
+                Log.i("Rate", "Submitting rating: " + rating);
+                Game.g().emit(Command.from("rate", rating));
             } catch (IOException e) {
                 e.printStackTrace();
                 return;

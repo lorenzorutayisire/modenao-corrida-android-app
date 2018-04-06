@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:background="#FFEBEE">
+        android:background="#FFF176">
 
         <TextView
             android:id="@+id/wr_str"

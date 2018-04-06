@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="#FFEBEE"
+        android:background="#FFF176"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="50dp">
@@ -34,10 +34,10 @@
             android:id="@+id/rate_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFCDD2"
+            android:background="#E53935"
             android:padding="25dp"
             android:text="Invia"
-            android:textColor="#E53935"
-            android:textSize="28sp" />
+            android:textColor="#FFF176"
+            android:textSize="48sp" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
