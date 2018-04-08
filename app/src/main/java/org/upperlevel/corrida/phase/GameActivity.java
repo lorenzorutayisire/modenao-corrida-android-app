@@ -6,8 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import org.upperlevel.corrida.MainActivity;
-import org.upperlevel.corrida.phase.Phase;
-import org.upperlevel.corrida.phase.PhaseManager;
 import org.upperlevel.corrida.phase.fetch.JoinNaoPhase;
 import org.upperlevel.corrida.phase.fetch.SearchNaoPhase;
 
@@ -19,7 +17,10 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i("GameActivity", "Started");
         super.onCreate(savedInstanceState);
+        Log.i("GameActivity", "Started super called");
+
         root = new PhaseManager<>();
 
         Intent intent = getIntent();
@@ -34,9 +35,27 @@ public class GameActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Log.i("GameActivity", "On back pressed");
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.i("GameActivity", "On pause");
+        super.onPause();
+    }
+
+    @Override
     protected void onStop() {
+        Log.i("GameActivity", "On stop");
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.i("GameActivity", "On destroy");
+        super.onDestroy();
         root.setPhase(null);
-        Log.i("GameConnector", "Game activity stopped");
     }
 }

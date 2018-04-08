@@ -57,6 +57,11 @@ public class LobbyPhase implements InnerGamePhase {
     }
 
     @Override
+    public void onPlayerQuit(Player player) {
+        activity.runOnUiThread(this::updatePlayersDisplay);
+    }
+
+    @Override
     public boolean onCommandAsync(Command cmd) {
         switch (cmd.name) {
             case "players":

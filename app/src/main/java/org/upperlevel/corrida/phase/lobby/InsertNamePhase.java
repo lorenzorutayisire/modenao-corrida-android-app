@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 import lombok.Getter;
 
 public class InsertNamePhase implements InnerGamePhase {
-    private static final Pattern CHECK_NAME = Pattern.compile("^[\\s_a-zA-Z0-9]{1,16}$");
+    private static final Pattern CHECK_NAME = Pattern.compile("^[_a-zA-Z0-9]{1,16}$");
 
     @Getter
     private Activity activity;
@@ -73,10 +73,10 @@ public class InsertNamePhase implements InnerGamePhase {
     public class OnNameSubmit implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            String name = ((TextView) activity.findViewById(R.id.name_input)).getText().toString();
+            String name = ((TextView) activity.findViewById(R.id.name_input)).getText().toString().toLowerCase();
             TextView nameError = activity.findViewById(R.id.name_error);
             if (!CHECK_NAME.matcher(name).matches()) {
-                nameError.setText("Invalid syntax name!");
+                nameError.setText("Nome invalido!");
                 return;
             }
             try {

@@ -67,7 +67,9 @@ public class GamePhase extends PhaseManager<InnerGamePhase> implements Phase {
         switch (cmd.name) {
             // By default, we listen for player_quit since it can happen at any time
             case "player_quit":
-                if (game.removePlayer(cmd.args[0]) != null) {
+                Player p = game.removePlayer(cmd.args[0]);
+                if (p != null) {
+                    getPhase().onPlayerQuit(p);
                     Log.i("Game", "Quit player: " + cmd.args[0]);
 
                     if (game.getPlayers().size() == 1 && getPhase() instanceof PerformancePhase) {
