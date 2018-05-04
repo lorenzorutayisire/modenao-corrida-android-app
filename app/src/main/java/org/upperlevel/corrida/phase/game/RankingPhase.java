@@ -6,14 +6,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.upperlevel.corrida.R;
+import org.upperlevel.corrida.phase.lobby.LobbyPhase;
+
+import java.io.IOException;
 
 import lombok.Getter;
 
 /**
  * In this phase will be shown the full ranking of all players.
  * This phase is the last of the game.
+ * <p>
+ * During this phase is possible to ask the game to be restarted.
  */
 public class RankingPhase implements InnerGamePhase {
     @Getter
@@ -59,11 +65,23 @@ public class RankingPhase implements InnerGamePhase {
         Log.i("Ranking", "Ranking built. Hope it's good looking");
     }
 
+
     @Override
     public void onLayoutSetup() {
         Log.i("Ranking", "Setting current view to ranking_layout");
         activity.setContentView(R.layout.ranking_layout);
         rankingLayout = activity.findViewById(R.id.ranking_val);
+
+        activity.findViewById(R.id.restart_request).setOnClickListener(v -> {
+            try {
+                Game.g().emit(Command.from("request_restart"));
+                Log.i("Ending", "Asking for game reset");
+            } catch (IOException e) {
+                Toast.makeText(activity, "Impossibile inviare richiesta", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        });
+
         buildRanking();
     }
 
@@ -74,6 +92,12 @@ public class RankingPhase implements InnerGamePhase {
 
     @Override
     public boolean onCommandAsync(Command cmd) {
+        switch (cmd.name) {
+            case "restart":
+                game.setPhase(new LobbyPhase(game));
+                Log.i("Ending", "Reset request accepted, going to lobby phase");
+                return true;
+        }
         return false;
     }
 }

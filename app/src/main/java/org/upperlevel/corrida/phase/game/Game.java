@@ -1,5 +1,7 @@
 package org.upperlevel.corrida.phase.game;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -99,9 +101,10 @@ public class Game {
     }
 
     public void close() throws IOException {
-        reader.close();
+        Log.i("Game", "Closing socket connection");
         socket.close();
 
+        Log.w("Game", "Now the game instance is null, be aware of not using it!");
         instance = null;
     }
 

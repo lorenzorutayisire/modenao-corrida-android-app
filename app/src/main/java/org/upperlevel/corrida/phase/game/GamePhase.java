@@ -11,6 +11,7 @@ import org.upperlevel.corrida.phase.PhaseManager;
 import org.upperlevel.corrida.phase.lobby.InsertNamePhase;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.Socket;
 
 import lombok.Getter;
@@ -44,11 +45,14 @@ public class GamePhase extends PhaseManager<InnerGamePhase> implements Phase {
 
     @Override
     public void onStop() {
+        Log.i("Game", "I'm stopping command listening, nou!");
         commandListener.interrupt();
+
+        Log.i("Game", "I'm killing my only child: " + getPhase().getClass().getSimpleName());
         setPhase(null);
         try {
+            Log.i("Game", "I'm deleting my remains...");
             game.close();
-            Log.i("Game", "Game closed");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,13 +100,11 @@ public class GamePhase extends PhaseManager<InnerGamePhase> implements Phase {
             while (isAlive()) {
                 Command cmd;
                 try {
+                    Log.i("Game", "Waiting for command...");
                     cmd = game.receive();
                 } catch (IOException e) {
-                    Log.w("Game", "Command reading error: " + e);
-                    activity.runOnUiThread(() -> {
-                        Toast.makeText(activity, "Il server ha smesso di rispondere", Toast.LENGTH_SHORT).show();
-                        emergencyQuit();
-                    });
+                    Log.e("Game", "Cannot read command: " + e);
+                    emergencyQuit();
                     return;
                 }
 

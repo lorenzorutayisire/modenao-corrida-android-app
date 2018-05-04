@@ -56,6 +56,8 @@ public class GameActivity extends AppCompatActivity {
     protected void onDestroy() {
         Log.i("GameActivity", "On destroy");
         super.onDestroy();
+
+        Log.i("GameActivity", "Near to stop phase: " + root.getPhase().getClass().getSimpleName());
         root.setPhase(null);
     }
 }
